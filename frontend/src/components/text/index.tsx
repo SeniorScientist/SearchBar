@@ -35,29 +35,34 @@ const Component: React.FC<Props> = ({
     `text-${align}`
   ]
 
-  if(bold) {
+  if (bold) {
     classNames.push('font-bold')
   } else {
     classNames.push('font-medium')
   }
 
-  if(uppercase) {
+  if (uppercase) {
     classNames.push('uppercase')
   }
 
-  if(inline) {
+  if (inline) {
     classNames.push('inline')
   }
 
-  if(noWrap) {
+  if (noWrap) {
     classNames.push('whitespace-nowrap')
   }
 
-  switch (color) {
+  switch (variant) {
     case 'h1':
-        
+      classNames.push('text-2xl')
+      classNames.push('leading-34')
+      classNames.push('tracking-wider')
       break
-    case 'h2':
+    case 'h6':
+      classNames.push('text-base')
+      classNames.push('tracking-wide')
+      classNames.push('leading-normal')
       break
   }
 
