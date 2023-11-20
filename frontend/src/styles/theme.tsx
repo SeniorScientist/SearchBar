@@ -1,12 +1,8 @@
 export type themeColor = 
-  | 'primary'
-  | 'primary-dark'
-  | 'primary-light'
-  | 'primary-text'
-  | 'secondary'
-  | 'secondary-dark'
-  | 'secondary-light'
-  | 'secondary-text'
+  | 'black'
+  | 'white'
+  | 'black-secondary'
+  | 'accent'
 
 export type themeVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'div' | 'span'
 

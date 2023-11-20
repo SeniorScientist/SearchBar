@@ -19,7 +19,7 @@ interface Props {
 const Component: React.FC<Props> = ({
   children,
   className,
-  tag = 'div',
+  tag = 'span',
   color = 'inherit',
   variant = 'h6',
   inline = false,

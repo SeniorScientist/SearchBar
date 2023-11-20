@@ -21,20 +21,20 @@ const Input: React.FC<InputProps> = React.forwardRef<HTMLInputElement, InputProp
     return (
       <div
         className={cn(
-          "flex items-center form-container relative bg-black-secondary rounded-tl-2xl",
+          "flex items-center form-container relative bg-additional rounded-tl-2xl",
+          xs === "lg" ? "py-4 px-8" : "",
+          xs === "md" ? "py-3 px-6" : "",
+          xs === "sm" ? "py-2 px-4" : "",
           hasFocus ? "active" : "",
-          fullBorder ? "full-border bg-transparent" : "",
+          fullBorder ? "full-border" : "",
           className ? className : ""
         )}
       >
-        {position === "start" && <div className="ml-2">{icon}</div>}
+        {position === "start" && <div className="mr-3">{icon}</div>}
         <input
           {...props}
           className={cn(
-            "bg-transparent text-white relative outline-none text-sm w-full",
-            xs === "lg" ? "py-1 px-2" : "",
-            xs === "md" ? "py-0.75 px-1.5" : "",
-            xs === "sm" ? "py-0.5 px-1" : ""
+            "bg-transparent text-black-secondary relative outline-none text-sm w-full"
           )}
           onFocus={() => {
             setHasFocus(true)
