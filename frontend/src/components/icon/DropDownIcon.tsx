@@ -11,7 +11,7 @@ const DropDownIcon = React.memo(
   }) => {
     return (
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill = "none" {...props}>
-        <path d="M8 10L12 14L16 10" stroke={color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M8 10L12 14L16 10" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg >
     )
   }
