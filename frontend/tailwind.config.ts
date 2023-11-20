@@ -8,9 +8,13 @@ const config: Config = {
   ],
   theme: {
     colors: {
+      'transparent': '#00000000',
       'black': '#1A1A1A',
+      'additional': '#434449',
       'white': '#FFFFFF',
-      'white-secondary': '#8B8D84',
+      'accent': '#D0FD3E',
+      'additional-secondary': '#212226',
+      'black-secondary': '#8B8D84'
     },
     fontFamily: {
       lato: ['Lato']
