@@ -1,0 +1,32 @@
+[
+  {
+   "Name": "Victory Park Sports Complex",
+   "Type": "Football Field",
+   "Date": "05.01.2023",
+   "Location": "Downtown"
+  },
+  {
+    "Name": "NetBusters Basketball Arena",
+    "Type": "Basketball Court",
+    "Date": "03.08.2023",
+    "Location": "Eastside"
+   },
+   {
+    "Name": "Spin City Tennis Club",
+    "Type": "Tennis Court",
+    "Date": "03.05.2023",
+    "Location": "West End"
+   },
+   {
+    "Name": "Field of Dreams Fields",
+    "Type": "Football Field",
+    "Date": "08.04.2023",
+    "Location": "North Shoe"
+   },
+   {
+    "Name": "Chicken Porridge",
+    "Type": "Badminton Court",
+    "Date": "03.01.2023",
+    "Location": "City Center"
+   }
+]
