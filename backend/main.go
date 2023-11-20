@@ -6,13 +6,19 @@ import (
 	"encoding/json"
 	"net/http"
 	"io/ioutil"
+	"strings"
 )
 
 type VenueData struct {
-	Name			string	`json:"Name"`
-	Type			string	`json:"Type"`
-	Date			string	`json:"Date"`
-	Location	string	`json:"Location"`
+	Name			string		`json:"Name"`
+	Type			string		`json:"Type"`
+	Date			string		`json:"Date"`
+	Location	string		`json:"Location"`
+}
+
+type ResponseData struct {
+	Message 	string 		`json:"message"`
+	Venue			[]string 	`json:"venue"`
 }
 
 // Create a slice of type Person to store the unmarshaled data
@@ -21,28 +27,62 @@ var venue []VenueData
 func autoCompleteHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	results := filterResults(query)
-	jsonResponse, err := json.Marshal(results)
+	
+	// Create an instance of your data structure
+	responseData := ResponseData {
+		Message: "AutoComplete successfully completion",
+		Venue: results,
+	}
+	
+	// Convert the data structure to JSON
+	jsonResponse, err := json.Marshal(responseData)
 	if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
+		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+		return
 	}
 
+	// Set CORS headers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method == "OPTIONS" {
+		// Respond to preflight requests
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	
 	w.Write(jsonResponse)
 }
 
 func filterResults(query string) []string {
 	var filteredResults []string
+
 	for _, item := range venue {
 			if query == "" || contains(item, query) {
 					filteredResults = append(filteredResults, item.Type)
 			}
 	}
-	return filteredResults
+
+	return reduceArray(filteredResults)
 }
 
 func contains(item VenueData, query string) bool {
-	return len(query) == 0 || (len(item.Type) >= len(query) && item.Type[:len(query)] == query) || (len(item.Name) >= len(query) && item.Name[:len(query)] == query)
+	return len(query) == 0 || strings.Contains(item.Type, query) || strings.Contains(item.Name, query)
+}
+
+func reduceArray(arr []string) []string {
+	seen := make(map[string]bool)
+	result := []string{}
+
+	for _, item := range arr {
+		if !seen[item] {
+			seen[item] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
 }
 
 func main() {
