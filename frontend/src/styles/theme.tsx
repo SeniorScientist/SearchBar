@@ -2,7 +2,7 @@ export type themeColor =
   | 'black'
   | 'white'
   | 'black-secondary'
-  | 'accent'
+  | 'yellow'
 
 export type themeVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'div' | 'span'
 

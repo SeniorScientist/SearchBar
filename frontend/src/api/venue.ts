@@ -1,9 +1,9 @@
-import { IVenue } from '@/interfaces'
+import { IVenueResponse } from '@/interfaces'
 import request from './request'
 
 const Venue = {
   getAutoComplete: (query: string) =>
-    request.get<IVenue[]>(`/autocomplete?query=${query}`),
+    request.get<IVenueResponse>(`/autocomplete?query=${query}`),
 }
 
 export default Venue

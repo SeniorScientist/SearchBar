@@ -4,10 +4,6 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:80
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data
 
-const axiosIntegrations = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_INTEGRATIONS_API_URL,
-})
-
 const request = {
   get: <T>(url: string) => axios.get<T>(url).then(responseBody),
 

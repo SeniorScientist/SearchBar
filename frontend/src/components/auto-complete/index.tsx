@@ -1,7 +1,8 @@
 import React, { ChangeEvent, MouseEvent, KeyboardEvent, useEffect } from "react"
 import { useState } from "react"
 import cn from "classnames"
-import { debounce } from "lodash"
+import { useDebounce } from "usehooks-ts"
+import { Text } from "../text"
 
 interface InputProps
   extends React.PropsWithoutRef<JSX.IntrinsicElements["input"]> {
@@ -25,10 +26,9 @@ const AutoComplete: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
     const [filtered, setFiltered] = useState<string[]>([])
     const [isShow, setIsShow] = useState<boolean>(false)
     const [input, setInput] = useState<string>("")
+    const debouncedValue = useDebounce<string>(input, DEBOUNCE_TIMEOUT)
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const input = e.currentTarget.value
-      debouncedSearch(input)
       setActive(0)
       setInput(e.currentTarget.value)
     }
@@ -38,9 +38,12 @@ const AutoComplete: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
       setIsShow(true)
     }, [suggestions])
 
-    const debouncedSearch = debounce((query: string) => {
-      get_suggestions(query)
-    }, DEBOUNCE_TIMEOUT)
+    // Fetch API (optional)
+    useEffect(() => {
+      // Do fetch here...
+      // Triggers when "debouncedValue" changes
+      get_suggestions(debouncedValue)
+    }, [debouncedValue])
 
     const onClick = (e: MouseEvent<HTMLLIElement>) => {
       setActive(0)
@@ -50,14 +53,14 @@ const AutoComplete: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
     }
 
     const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      switch(e.key) {
+      switch (e.key) {
         case 'Enter':
           setActive(0)
           setIsShow(false)
           setInput(filtered[active])
           break
         case 'ArrowDown':
-          return (active - 1 === filtered.length) ? null : setActive(active + 1)
+          return (active + 1 === filtered.length) ? null : setActive(active + 1)
         case 'ArrowUp':
           return (active === 0) ? null : setActive(active - 1)
       }
@@ -67,25 +70,20 @@ const AutoComplete: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
       if (isShow && input) {
         if (filtered.length) {
           return (
-            <ul className="absolute left-0 right w-full overflow-y-auto bg-additional list-none">
+            <ul className="absolute left-0 right w-full overflow-y-auto bg-additional list-none rounded-br-2xl">
               {
                 filtered.map((suggestion, index) => {
                   return (
-                    <li className={cn(`${index === active ? ' active' : ''}, px-16 py-3 active:cursor-pointer hover:cursor-pointer text-white`)} key={suggestion} onClick={onClick}>
-                      {suggestion}
+                    <li className='px-16 py-3 active:cursor-pointer hover:cursor-pointer hover:bg-yellow' key={suggestion} onClick={onClick}>
+                      <Text variant="h6" color={`${index === active ? 'white' : 'black-secondary'}`}>{suggestion}</Text>
                     </li>
                   )
                 })
               }
             </ul>
           )
-        } else {
-          return (
-            <></>
-          );
         }
       }
-      return <></>;
     }
 
     return (
@@ -104,7 +102,7 @@ const AutoComplete: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
           <input
             {...props}
             className={cn(
-              "bg-transparent text-black-secondary relative outline-none text-sm w-full"
+              "bg-transparent text-black-secondary relative outline-none text-sm w-full text-base tracking-wide leading-normal"
             )}
             onFocus={() => {
               setHasFocus(true)
