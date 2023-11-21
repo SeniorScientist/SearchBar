@@ -9,7 +9,7 @@ import (
 	"sort"
 	"os"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/cors"
+	"https://github.com/SeniorScientist/SearchBar/tree/main/backend/routes"
 )
 
 type VenueData struct {
@@ -22,16 +22,6 @@ type VenueData struct {
 // Create a slice of type Venue to store the unmarshaled data
 var venue []VenueData
 
-func autoCompleteHandler(c *gin.Context) {
-	query := c.Query("query")
-	results := filterResults(query)
-	sort.Strings(results)
-	
-	c.JSON(http.StatusOK, gin.H{
-		"message": "AutoComplete successfully completion",
-		"venue": results,
-	})
-}
 
 func filterResults(query string) []string {
 	var filteredResults []string
@@ -94,18 +84,12 @@ func main() {
 		// If not set, use the default port 8080
 		port = "8080"
 	}
-	
-	router := gin.Default()
-
-	// CORS middleware
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"} // Replace with the actual origins you want to allow
-	router.Use(cors.New(config))
 
 	
-	router.ForwardedByClientIP = true
-  // Define an API endpoint
-	router.GET("/api/venue/autocomplete", autoCompleteHandler)
+
+	// Define an API endpoint
+	router := routes.SetupRouter()
+	
   router.Run(":" + port) // listen and serve on localhost:8080
 	fmt.Printf("Server is running on :%s\n", port)
 }
