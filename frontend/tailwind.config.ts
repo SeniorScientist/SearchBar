@@ -10,9 +10,9 @@ const config: Config = {
     colors: {
       'transparent': '#00000000',
       'black': '#1A1A1A',
+      'yellow': '#D0FD3E',
       'additional': '#434449',
       'white': '#FFFFFF',
-      'accent': '#D0FD3E',
       'additional-secondary': '#212226',
       'black-secondary': '#8B8D84'
     },

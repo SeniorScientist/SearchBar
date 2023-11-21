@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"encoding/json"
 	"net/http"
 	"io/ioutil"
 	"strings"
+	"sort"
+	"os"
+	"github.com/gin-gonic/gin"
 )
 
 type VenueData struct {
@@ -16,43 +18,18 @@ type VenueData struct {
 	Location	string		`json:"Location"`
 }
 
-type ResponseData struct {
-	Message 	string 		`json:"message"`
-	Venue			[]string 	`json:"venue"`
-}
-
 // Create a slice of type Person to store the unmarshaled data
 var venue []VenueData
 
-func autoCompleteHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("query")
+func autoCompleteHandler(c *gin.Context) {
+	query := c.Query("query")
 	results := filterResults(query)
+	sort.Strings(results)
 	
-	// Create an instance of your data structure
-	responseData := ResponseData {
-		Message: "AutoComplete successfully completion",
-		Venue: results,
-	}
-	
-	// Convert the data structure to JSON
-	jsonResponse, err := json.Marshal(responseData)
-	if err != nil {
-		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
-		return
-	}
-
-	// Set CORS headers
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-	w.Header().Set("Content-Type", "application/json")
-
-	if r.Method == "OPTIONS" {
-		// Respond to preflight requests
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	
-	w.Write(jsonResponse)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "AutoComplete successfully completion",
+		"venue": results,
+	})
 }
 
 func filterResults(query string) []string {
@@ -68,7 +45,7 @@ func filterResults(query string) []string {
 }
 
 func contains(item VenueData, query string) bool {
-	return len(query) == 0 || strings.Contains(item.Type, query) || strings.Contains(item.Name, query)
+	return len(query) == 0 || strings.Contains(strings.ToLower(item.Type), strings.ToLower(query)) || strings.Contains(strings.ToLower(item.Name), strings.ToLower(query))
 }
 
 func reduceArray(arr []string) []string {
@@ -85,26 +62,42 @@ func reduceArray(arr []string) []string {
 	return result
 }
 
-func main() {
+func loadLocalData() bool {
 	// Read the JSON file
 	venueData, err := ioutil.ReadFile("venueData.json")
 	if err != nil {
 		fmt.Println("Error reading JSON file:", err)
-		return
+		return false
 	}
 
 	// Unmarshal the JSON data into the slice of Person
 	err = json.Unmarshal(venueData, &venue)
 	if err != nil {
 		fmt.Println("Error unmarshaling JSON:", err)
-		return
+		return false
 	}
 
-	// Register the autoCompleteHandler function for the "/autocomplete" route
-	http.HandleFunc("/autocomplete", autoCompleteHandler)
+	return true
+}
 
-	// Start the HTTP server on port 8080
-	port := 8080
-	fmt.Println("Server listening on port", port)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+func main() {
+	
+	if(!loadLocalData()) {
+		fmt.Println("Error loading local json data, please check")
+		return
+	}
+		
+	// Check if the PORT environment variable is set
+	port := os.Getenv("PORT")
+	if port == "" {
+		// If not set, use the default port 8080
+		port = "8080"
+	}
+	
+	router := gin.Default()
+	router.ForwardedByClientIP = true
+  // Define an API endpoint
+	router.GET("/api/venue/autocomplete", autoCompleteHandler)
+  router.Run(":" + port) // listen and serve on localhost:8080
+	fmt.Printf("Server is running on :%s\n", port)
 }
