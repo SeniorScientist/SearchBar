@@ -9,6 +9,7 @@ import (
 	"sort"
 	"os"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 type VenueData struct {
@@ -18,7 +19,7 @@ type VenueData struct {
 	Location	string		`json:"Location"`
 }
 
-// Create a slice of type Person to store the unmarshaled data
+// Create a slice of type Venue to store the unmarshaled data
 var venue []VenueData
 
 func autoCompleteHandler(c *gin.Context) {
@@ -95,6 +96,13 @@ func main() {
 	}
 	
 	router := gin.Default()
+
+	// CORS middleware
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"} // Replace with the actual origins you want to allow
+	router.Use(cors.New(config))
+
+	
 	router.ForwardedByClientIP = true
   // Define an API endpoint
 	router.GET("/api/venue/autocomplete", autoCompleteHandler)
