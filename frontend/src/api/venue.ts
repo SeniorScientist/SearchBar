@@ -3,7 +3,7 @@ import request from './request'
 
 const Venue = {
   getAutoComplete: (query: string) =>
-    request.get<IVenueResponse>(`/autocomplete?query=${query}`),
+    request.get<IVenueResponse>(`/venue/autocomplete?query=${query}`),
 }
 
 export default Venue

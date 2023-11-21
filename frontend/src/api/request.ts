@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data
 
